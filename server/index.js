@@ -1,6 +1,8 @@
  const express = require("express");
  const app = express();
  const bodyparser = require("body-parser");
+
+
  const mysql = require("mysql2");
  const cors = require("cors");
 
@@ -8,20 +10,79 @@
     host : "localhost",
     user: "root",
     password: "",
-    database: "stats_db"
- })
+    database: "stats_db",
+    port : 3307
+ });
  
  
  app.use(cors());
  app.use(express.json());
- app.use(bodyparser,urlencoded({extended: true}));
+ app.use(express.urlencoded({ extended: true }));
+
+ // get requette
 
  app.get("/api/get", (req, res) =>{
-    const sqlget = "select * FROM liste_joueur ;"
+    const sqlget = "SELECT * FROM joueur_info";
     db.query(sqlget,(error, result) => {
         res.send("Hello Express" );
     });
  } );
+
+
+  //INSERTION
+
+  app.post("/api/post" ,(req, res) => {
+
+    const {name,club,goal_scored,goal_losses,poste_title} = req.body;
+    const sqlInsert = "INSERT INTO joueur_info (name,club,goal_scored,goal_losses,poste_title) VALUES(?,?,?,?,?)";
+    db.query(sqlInsert,[name, club, goal_scored, goal_losses, poste_title],(error,result) =>{
+    if (error) {
+        console.log(error)
+    }
+     });
+    })
+
+     //DELETE
+     app.delete(`/api/remove/:id`, (req, res) => {
+
+        const { id } = req.params;
+        const sqlRemove = 
+        "DELETE FROM joueur_info WHERE id = ?";
+        db.query(sqlRemove,id,(err,result) =>{
+        if (err) {
+            console.log(err); 
+        }
+         });
+        });
+
+        app.get("/api/get/:id" , (req ,res ) => {
+            const {id} = req.params;
+            const sqlGet = "SELECT * FROM joueur_info where id = ?";
+            db.query(sqlGet,id, (error , result) => {
+                if( error){
+                    console.log(error)
+                }
+                res.send(result);
+            });
+        });
+
+                    //update
+            app.put("/api/update/:id" , (req ,res ) => {
+
+                const { id } = req.params;
+
+                const {name, club, goal_scored, goal_losses, poste_title} = req.body;
+
+                const sqlUpdate = `UPDATE joueur_info SET name = ?,club = ?, goal_scored, = ?,goal_losses = ?, poste_title = ? WHERE id = ? `;
+
+                db.query(sqlUpdate,[name, club, goal_scored, goal_losses, poste_title, id],(err,result) =>{
+                if (err) {
+                    console.log(err);
+                }
+                res.send(result)
+                 });
+                });
+        
 
 
 //  app.get("/",(req,res) => {
@@ -34,8 +95,8 @@
 //     });
 //  } );
 
- app.listen(5000,  () => {
-    console.log("server is running on port 5000 ");
+ app.listen(5000,() => 
+    console.log("server is running on port 5000 ")
 
 
- } )
+  );
