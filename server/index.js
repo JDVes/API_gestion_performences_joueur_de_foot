@@ -7,10 +7,10 @@
  const cors = require("cors");
 
  const db = mysql.createpool({
-    host : "localhost",
-    user: "root",
-    password: "",
-    database: "stats_db",
+    host : "mysql-reactapp00.alwaysdata.net",
+    user: "277707_db",
+    password: "Dclic_2022",
+    database: "reactapp00_db",
     port : 80
  });
  
