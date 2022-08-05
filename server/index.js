@@ -6,14 +6,18 @@
  const mysql = require("mysql2");
  const cors = require("cors");
 
- const_db = mysql.createPool({
+ const db = mysql.createpool({
     host : "localhost",
     user: "root",
     password: "",
     database: "stats_db",
-    port : 3307
+    port : 80
  });
  
+ db.connect(function(err) {
+    if (err) throw err;
+    console.log("Connecté à la base de données MySQL!");
+  });
  
  app.use(cors());
  app.use(express.json());
